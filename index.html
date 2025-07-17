@@ -4,6 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>WiFi & Motor Honda - Responsif</title>
+<meta name="description" content="Pesan WiFi XL Home dan Motor Honda secara mudah. Simulasi cicilan, langsung chat WhatsApp!" />
+<meta name="keywords" content="WiFi XL Home, Motor Honda, cicilan motor, pesan online" />
+<meta name="author" content="Bambank" />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 <style>
   :root {
@@ -19,12 +22,7 @@
   }
 
   *{box-sizing:border-box;margin:0;padding:0}
-  body{
-    font-family:'Poppins',sans-serif;
-    background:#f0f4f8;
-    color:#1b1b1b;
-    line-height:1.5;
-  }
+  body{font-family:'Poppins',sans-serif;background:#f0f4f8;color:#1b1b1b;line-height:1.5;}
   img{max-width:100%;height:auto;display:block}
 
   header{
@@ -108,6 +106,15 @@
   .btn-primary{background:var(--success);color:#fff;border:none;padding:12px;font-size:15px;font-weight:600;border-radius:8px;cursor:pointer;width:100%;margin-top:15px}
   .btn-primary:hover{background:var(--success-dark)}
   .catatan-kecil{font-size:12px;color:#777;margin-top:8px;text-align:center}
+
+  /* Floating WhatsApp */
+  .wa-float{
+    position:fixed;width:60px;height:60px;bottom:20px;right:20px;
+    background:#25d366;color:#fff;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:28px;text-decoration:none;
+    box-shadow:0 4px 10px rgba(0,0,0,.3);z-index:999
+  }
 </style>
 </head>
 <body>
@@ -139,7 +146,7 @@
       <button class="btn-wifi">Pesan Paket</button>
     </div>
     <div class="wifi-card" data-wifi-nama="Paket Superuser" data-wifi-harga="369000">
-      <h3>Paket Family</h3>
+      <h3>Paket Superuser</h3>
       <p class="harga">Rp 369.000/bulan</p>
       <p>Kecepatan hingga 100 Mbps<br>Unlimited kuota</p>
       <span class="note-ppn">Diluar PPN 11%</span>
@@ -153,6 +160,9 @@
   <h2>Katalog Motor Honda</h2>
   <div id="motorGrid" class="grid"></div>
 </section>
+
+<!-- Floating WA contact -->
+<a href="https://wa.me/6285927420891" class="wa-float" target="_blank" aria-label="Chat WhatsApp">&#x1F4AC;</a>
 
 <!-- ===================== MODAL MOTOR ===================== -->
 <div id="motorModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
@@ -209,7 +219,6 @@
 
 <script>
 /* ================== KONFIG NOMOR WA ADMIN ================== */
-/* Nomor kamu: 085927420891 -> format internasional tanpa + : 6285927420891 */
 const WA_ADMIN = "6285927420891";
 
 /* ================== DATA MOTOR ================== */
