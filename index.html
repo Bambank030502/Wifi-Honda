@@ -416,5 +416,29 @@ function kirimKeWA(msg){
   window.open(url,'_blank');
 }
 </script>
+  <script>
+  function hitungBunga() {
+    const harga = parseFloat(document.getElementById('harga').value);
+    const dp = parseFloat(document.getElementById('dp').value);
+    const tenor = parseFloat(document.getElementById('tenor').value);
+    const angsuran = parseFloat(document.getElementById('angsuran').value);
+
+    if (isNaN(harga) || isNaN(dp) || isNaN(tenor) || isNaN(angsuran)) {
+      document.getElementById('hasilBunga').innerText = "Mohon isi semua kolom.";
+      return;
+    }
+
+    const pinjaman = harga - dp;
+    const totalAngsuran = angsuran * tenor;
+    const totalBunga = totalAngsuran - pinjaman;
+    const bungaFlat = ((totalBunga / pinjaman) / tenor) * 12 * 100;
+
+    document.getElementById('hasilBunga').innerHTML = `
+      <p>Total Angsuran: Rp ${totalAngsuran.toLocaleString()}</p>
+      <p>Total Bunga: Rp ${totalBunga.toLocaleString()}</p>
+      <p><strong>Suku Bunga Flat per Tahun: ${bungaFlat.toFixed(2)}%</strong></p>
+    `;
+  }
+</script>
 </body>
 </html>
