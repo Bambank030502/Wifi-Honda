@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WiFi & Motor Honda - Responsif</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --xl-blue-dark:#0054a6;
+    --xl-blue:#007bff;
+    --success:#28a745;
+    --success-dark:#1e7e34;
+    --radius-lg:15px;
+    --radius-md:10px;
+    --shadow-sm:0 3px 8px rgba(0,0,0,.05);
+    --shadow-md:0 4px 12px rgba(0,0,0,.1);
+    --shadow-lg:0 8px 24px rgba(0,0,0,.15);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Poppins',sans-serif;
+    background:#f0f4f8;
+    color:#1b1b1b;
+    line-height:1.5;
+  }
+  img{max-width:100%;height:auto;display:block}
+
+  header{
+    background:linear-gradient(90deg,var(--xl-blue-dark),var(--xl-blue));
+    color:#fff;text-align:center;padding:20px;
+  }
+  .header-logos{
+    display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:10px;
+  }
+  .header-logos img{height:48px;max-width:45%;}
+  @media(min-width:768px){.header-logos img{height:72px}}
+
+  section{
+    background:#fff;max-width:1000px;margin:20px auto;padding:20px;border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-md);
+  }
+  section h2{text-align:center;margin-bottom:20px;font-size:20px;}
+  @media(min-width:600px){section h2{font-size:22px}}
+  @media(min-width:900px){section h2{font-size:24px}}
+
+  /* WiFi Cards */
+  .wifi-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:15px;
+  }
+  @media(min-width:600px){
+    .wifi-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media(min-width:900px){
+    .wifi-grid{grid-template-columns:repeat(3,1fr);}
+  }
+  .wifi-card{
+    border-radius:12px;padding:20px;text-align:center;
+    background:#fff;box-shadow:var(--shadow-md);
+    transition:transform .3s;
+  }
+  .wifi-card:hover{transform:scale(1.02)}
+  .wifi-card h3{color:var(--xl-blue);font-size:18px;margin-bottom:8px}
+  .wifi-card .harga{font-size:20px;color:var(--success);font-weight:700;margin:8px 0}
+  .wifi-card p{margin:5px 0;line-height:1.3}
+  .wifi-card .note-ppn{
+    display:block;
+    font-size:11px;color:#777;margin-top:6px;margin-bottom:8px;
+  }
+  .wifi-card button{
+    width:100%;padding:10px;font-size:14px;font-weight:600;
+    background:var(--success);color:#fff;border:none;border-radius:8px;cursor:pointer;
+  }
+  .wifi-card button:hover{background:var(--success-dark);}
+
+  /* Motor Grid */
+  .grid{
+    display:grid;gap:15px;
+    grid-template-columns:1fr;
+  }
+  @media(min-width:600px){.grid{grid-template-columns:repeat(2,1fr);}}
+  @media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr);}}
+  .item{
+    background:#fff;padding:15px;border-radius:var(--radius-md);
+    box-shadow:var(--shadow-sm);text-align:center;
+    cursor:pointer;transition:.3s;
+  }
+  .item:hover{transform:translateY(-3px) scale(1.02)}
+  .item img{width:100%;height:auto;max-height:180px;object-fit:cover;border-radius:var(--radius-md);}
+  .item h3{margin:10px 0 5px;font-size:16px}
+  .item p{margin:0;font-weight:600;color:#444}
+
+  /* Modal */
+  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:999}
+  .modal-backdrop.active{display:flex}
+  .modal{background:#fff;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;padding:20px;border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);position:relative;animation:pop .18s ease-out}
+  @keyframes pop{from{transform:scale(.96);opacity:.0}to{transform:scale(1);opacity:1}}
+  .modal h2{margin-top:0;font-size:20px;color:var(--xl-blue-dark)}
+  .modal-close{position:absolute;top:10px;right:12px;background:none;border:none;font-size:24px;cursor:pointer;color:#666;line-height:1}
+  .modal img.motor-foto{width:100%;border-radius:var(--radius-md);margin-bottom:10px}
+  .modal label{display:block;margin:10px 0 4px;font-weight:600}
+  .modal input,.modal select,.modal textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;font-size:14px;font-family:inherit}
+  .modal textarea{resize:vertical;min-height:80px}
+  .angsuran-output{margin-top:10px;font-size:16px;font-weight:700;color:var(--success)}
+  .btn-primary{background:var(--success);color:#fff;border:none;padding:12px;font-size:15px;font-weight:600;border-radius:8px;cursor:pointer;width:100%;margin-top:15px}
+  .btn-primary:hover{background:var(--success-dark)}
+  .catatan-kecil{font-size:12px;color:#777;margin-top:8px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-logos">
+    <img src="xlhome.jpg" alt="XL Home" />
+    <img src="fif2.jpg" alt="FIF" />
+  </div>
+  <h1>WiFi & Motor Honda</h1>
+  <p>Pesan WiFi rumah atau motor impianmu dengan mudah dan cepat!</p>
+</header>
+
+<!-- ===================== WIFI SECTION ===================== -->
+<section id="paket-wifi">
+  <h2>WiFi XL Home</h2>
+  <div class="wifi-grid">
+    <div class="wifi-card" data-wifi-nama="Paket Value" data-wifi-harga="225000">
+      <h3>Paket Value</h3>
+      <p class="harga">Rp 225.000/bulan</p>
+      <p>Kecepatan hingga 30 Mbps<br>Unlimited kuota</p>
+      <span class="note-ppn">Diluar PPN 11%</span>
+      <button class="btn-wifi">Pesan Paket</button>
+    </div>
+    <div class="wifi-card" data-wifi-nama="Paket Smart" data-wifi-harga="245000">
+      <h3>Paket Smart</h3>
+      <p class="harga">Rp 245.000/bulan</p>
+      <p>Kecepatan hingga 50 Mbps<br>Unlimited kuota</p>
+      <span class="note-ppn">Diluar PPN 11%</span>
+      <button class="btn-wifi">Pesan Paket</button>
+    </div>
+    <div class="wifi-card" data-wifi-nama="Paket Superuser" data-wifi-harga="369000">
+      <h3>Paket Family</h3>
+      <p class="harga">Rp 369.000/bulan</p>
+      <p>Kecepatan hingga 100 Mbps<br>Unlimited kuota</p>
+      <span class="note-ppn">Diluar PPN 11%</span>
+      <button class="btn-wifi">Pesan Paket</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== KATALOG MOTOR ===================== -->
+<section id="katalog">
+  <h2>Katalog Motor Honda</h2>
+  <div id="motorGrid" class="grid"></div>
+</section>
+
+<!-- ===================== MODAL MOTOR ===================== -->
+<div id="motorModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" id="motorModal">
+    <button class="modal-close" data-close-motor>&times;</button>
+    <h2 id="motorNama">Nama Motor</h2>
+    <img id="motorFoto" src="" alt="Foto Motor" class="motor-foto" />
+    <div class="harga-otr" id="motorHarga">Rp 0</div>
+
+    <!-- Varian -->
+    <div id="varianWrapper" style="display:none;">
+      <label for="motorVarian">Pilih Varian</label>
+      <select id="motorVarian"></select>
+    </div>
+
+    <label for="motorDp">DP (uang muka) *</label>
+    <input id="motorDp" type="number" min="0" step="50000" placeholder="Masukkan DP (contoh 3000000)" />
+    <label for="motorTenor">Tenor (bulan) *</label>
+    <select id="motorTenor">
+      <option value="12">12</option>
+      <option value="24">24</option>
+      <option value="36" selected>36</option>
+      <option value="48">48</option>
+    </select>
+    <div class="angsuran-output" id="motorAngsuran">Angsuran: -</div>
+    <button class="btn-primary" id="motorKirimWA">Kirim Simulasi ke WhatsApp</button>
+    <div class="catatan-kecil">*Simulasi sederhana (flat, tanpa bunga). Untuk penawaran resmi akan dihitung oleh admin.</div>
+  </div>
+</div>
+
+<!-- ===================== MODAL WIFI ===================== -->
+<div id="wifiModalBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" id="wifiModal">
+    <button class="modal-close" data-close-wifi>&times;</button>
+    <h2 id="wifiJudul">Pesan Paket WiFi</h2>
+    <p class="text-center" id="wifiNamaPaket">Paket -</p>
+
+    <label for="wifiNama">Nama Lengkap *</label>
+    <input id="wifiNama" type="text" placeholder="Nama kamu" />
+
+    <label for="wifiNoHp">No. HP (opsional)</label>
+    <input id="wifiNoHp" type="text" placeholder="08xxxxxxxxxx" />
+
+    <label for="wifiAlamat">Alamat Lengkap *</label>
+    <textarea id="wifiAlamat" placeholder="Alamat lengkap + patokan"></textarea>
+
+    <label for="wifiShareloc">Link Share Lokasi (Google Maps) *</label>
+    <input id="wifiShareloc" type="text" placeholder="Tempel link share lokasi" />
+
+    <button class="btn-primary" id="wifiKirimWA">Kirim ke WhatsApp</button>
+    <div class="catatan-kecil">Pastikan lokasi sudah akurat sebelum kirim.</div>
+  </div>
+</div>
+
+<script>
+/* ================== KONFIG NOMOR WA ADMIN ================== */
+/* Nomor kamu: 085927420891 -> format internasional tanpa + : 6285927420891 */
+const WA_ADMIN = "6285927420891";
+
+/* ================== DATA MOTOR ================== */
+const motorData=[
+  {nama:"Scoopy",harga:22876000,img:"scoopy.jpg",varian:["Energetic","Fashion","Prestige"]},
+  {nama:"BeAT",harga:18930000,img:"bt.jpg",varian:["Sporty CBS","Deluxe Smart Key"]},
+  {nama:"BeAT Street",harga:19801000,img:"bs.jpg"},
+  {nama:"Genio",harga:20075000,img:"genio.jpg"},
+  {nama:"Vario 125",harga:23910000,img:"vario125.jpg"},
+  {nama:"Vario 160",harga:28330000,img:"vario160.jpg"},
+  {nama:"Supra GTR 150",harga:26320000,img:"gtr.jpg"},
+  {nama:"Sonic 150R",harga:28973000,img:"sonic.jpg"},
+  {nama:"CRF 150L",harga:38798000,img:"crf150.jpg"},
+  {nama:"Revo",harga:17968000,img:"revo.jpg"},
+  {nama:"Supra X 125 FI",harga:21333000,img:"supra125.jpg"},
+  {nama:"Stylo",harga:28920000,img:"stylo.jpg"},
+  {nama:"PCX",harga:34350000,img:"pcx.jpg"},
+  {nama:"ADV 150",harga:37265000,img:"adv.jpg"}
+];
+
+/* Rupiah formatter */
+const rupiah=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n);
+
+/* Render katalog motor */
+const motorGrid=document.getElementById('motorGrid');
+motorData.forEach((m,i)=>{
+  const d=document.createElement('div');
+  d.className='item';
+  d.dataset.index=i;
+  d.innerHTML=`<img src="${m.img}" alt="${m.nama}"><h3>${m.nama}</h3><p>${rupiah(m.harga)}</p>`;
+  motorGrid.appendChild(d);
+});
+
+/* ======= Modal Helpers ======= */
+const motorModalBackdrop=document.getElementById('motorModalBackdrop');
+const wifiModalBackdrop=document.getElementById('wifiModalBackdrop');
+function openModal(backdrop){backdrop.classList.add('active');backdrop.setAttribute('aria-hidden','false');}
+function closeModal(backdrop){backdrop.classList.remove('active');backdrop.setAttribute('aria-hidden','true');}
+
+/* Klik di luar modal untuk tutup */
+[motorModalBackdrop,wifiModalBackdrop].forEach(b=>{
+  b.addEventListener('click',e=>{if(e.target===b)closeModal(b);});
+});
+
+/* ESC key */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeModal(motorModalBackdrop);closeModal(wifiModalBackdrop);}
+});
+
+/* ======= MOTOR MODAL LOGIC ======= */
+const motorNamaEl=document.getElementById('motorNama');
+const motorFotoEl=document.getElementById('motorFoto');
+const motorHargaEl=document.getElementById('motorHarga');
+const motorDpEl=document.getElementById('motorDp');
+const motorTenorEl=document.getElementById('motorTenor');
+const motorAngsuranEl=document.getElementById('motorAngsuran');
+const motorKirimWAEl=document.getElementById('motorKirimWA');
+const varianWrapper=document.getElementById('varianWrapper');
+const motorVarianEl=document.getElementById('motorVarian');
+
+let motorAktif=null;
+
+motorGrid.addEventListener('click',e=>{
+  const item=e.target.closest('.item');
+  if(!item)return;
+  const idx=+item.dataset.index;
+  motorAktif=motorData[idx];
+  motorNamaEl.textContent=motorAktif.nama;
+  motorFotoEl.src=motorAktif.img;
+  motorFotoEl.alt=motorAktif.nama;
+  motorHargaEl.textContent=rupiah(motorAktif.harga);
+  motorDpEl.value='';
+  motorTenorEl.value='36';
+  motorAngsuranEl.textContent='Angsuran: -';
+
+  /* Varian */
+  if(motorAktif.varian){
+    varianWrapper.style.display='block';
+    motorVarianEl.innerHTML='';
+    motorAktif.varian.forEach(v=>{
+      const opt=document.createElement('option');
+      opt.value=v;opt.textContent=v;
+      motorVarianEl.appendChild(opt);
+    });
+  }else{
+    varianWrapper.style.display='none';
+    motorVarianEl.innerHTML='';
+  }
+
+  openModal(motorModalBackdrop);
+  motorDpEl.focus();
+});
+
+/* Hitung angsuran flat sederhana */
+function hitungAngsuran(){
+  if(!motorAktif)return;
+  const dp=parseInt(motorDpEl.value||0,10);
+  const tenor=parseInt(motorTenorEl.value,10);
+  const sisa=Math.max(motorAktif.harga-dp,0);
+  const cicilan=Math.ceil(sisa/tenor);
+  motorAngsuranEl.textContent=`Angsuran: ${rupiah(cicilan)}/bulan`;
+  return {dp,tenor,cicilan,sisa};
+}
+motorDpEl.addEventListener('input',hitungAngsuran);
+motorTenorEl.addEventListener('change',hitungAngsuran);
+
+/* Kirim simulasi motor ke WA */
+motorKirimWAEl.addEventListener('click',()=>{
+  if(!motorAktif)return;
+  const {dp,tenor,cicilan,sisa}=hitungAngsuran();
+  const varianText=(motorAktif.varian?`Varian: ${motorVarianEl.value}`:'');
+  const pesan=[
+    '*PESAN MOTOR HONDA*',
+    `Model: ${motorAktif.nama}`,
+    varianText,
+    `Harga OTR: ${rupiah(motorAktif.harga)}`,
+    `DP: ${rupiah(dp)}`,
+    `Sisa Pokok: ${rupiah(sisa)}`,
+    `Tenor: ${tenor} bulan`,
+    `Perkiraan Angsuran: ${rupiah(cicilan)}/bulan`,
+    '',
+    'Tolong hubungi saya untuk info lanjut.'
+  ].filter(Boolean).join('%0A');
+  kirimKeWA(pesan);
+});
+
+document.querySelector('[data-close-motor]').addEventListener('click',()=>closeModal(motorModalBackdrop));
+
+/* ======= WIFI MODAL LOGIC ======= */
+const wifiButtons=[...document.querySelectorAll('.btn-wifi')];
+const wifiJudulEl=document.getElementById('wifiJudul');
+const wifiNamaPaketEl=document.getElementById('wifiNamaPaket');
+const wifiNamaEl=document.getElementById('wifiNama');
+const wifiNoHpEl=document.getElementById('wifiNoHp');
+const wifiAlamatEl=document.getElementById('wifiAlamat');
+const wifiSharelocEl=document.getElementById('wifiShareloc');
+const wifiKirimWAEl=document.getElementById('wifiKirimWA');
+
+let wifiAktif={nama:null,harga:null};
+
+wifiButtons.forEach(btn=>{
+  btn.addEventListener('click',e=>{
+    const card=e.target.closest('.wifi-card');
+    wifiAktif.nama=card.dataset.wifiNama;
+    wifiAktif.harga=+card.dataset.wifiHarga;
+    wifiJudulEl.textContent='Pesan '+wifiAktif.nama;
+    wifiNamaPaketEl.textContent=`${wifiAktif.nama} - ${rupiah(wifiAktif.harga)}/bulan (belum PPN)`;
+    wifiNamaEl.value='';
+    wifiNoHpEl.value='';
+    wifiAlamatEl.value='';
+    wifiSharelocEl.value='';
+    openModal(wifiModalBackdrop);
+    wifiNamaEl.focus();
+  });
+});
+
+wifiKirimWAEl.addEventListener('click',()=>{
+  if(!wifiAktif.nama)return;
+  const nama=wifiNamaEl.value.trim();
+  const nohp=wifiNoHpEl.value.trim();
+  const alamat=wifiAlamatEl.value.trim();
+  const share=wifiSharelocEl.value.trim();
+  if(!nama||!alamat||!share){
+    alert('Nama, alamat, dan link share lokasi wajib diisi.');
+    return;
+  }
+  const pesan=[
+    '*PESAN WIFI XL HOME*',
+    `Paket: ${wifiAktif.nama} (${rupiah(wifiAktif.harga)}/bln + PPN)`,
+    `Nama: ${nama}`,
+    nohp?`No HP: ${nohp}`:'',
+    `Alamat: ${alamat}`,
+    `Lokasi: ${share}`,
+    '',
+    'Tolong proses pendaftaran instalasi. Terima kasih.'
+  ].filter(Boolean).join('%0A');
+  kirimKeWA(pesan);
+});
+
+document.querySelector('[data-close-wifi]').addEventListener('click',()=>closeModal(wifiModalBackdrop));
+
+/* ======= FUNGSI KIRIM WA (1 pintu) ======= */
+function kirimKeWA(msg){
+  const url=`https://wa.me/${WA_ADMIN}?text=${msg}`;
+  window.open(url,'_blank');
+}
+</script>
+</body>
+</html>
